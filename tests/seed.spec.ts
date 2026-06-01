@@ -1,7 +1,7 @@
 import { test, expect } from '@playwright/test';
 
-test.describe('Test group', () => {
-  test('seed', async ({ page }) => {
+test.describe('Grupo de testes', () => {
+  test('teste semente', async ({ page }) => {
     // generate code here.
   });
 });

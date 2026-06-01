@@ -7,8 +7,8 @@ import { InventoryPage } from '../page/inventory-page';
 import { LoginPage } from '../page/login-page';
 import { STANDARD_USER, VALID_PASSWORD } from './test-data';
 
-test.describe('Sauce Demo full checkout flow', () => {
-  test('login, add one product, checkout, return home and logout', async ({ page }) => {
+test.describe('Fluxo completo de checkout do Sauce Demo', () => {
+  test('fazer login, adicionar um produto, checkout, retornar para home e logout', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const inventoryPage = new InventoryPage(page);
     const cartPage = new CartPage(page);
@@ -44,7 +44,7 @@ test.describe('Sauce Demo full checkout flow', () => {
     await loginPage.expectLoginVisible();
   });
 
-  test('checkout fails when required customer data is incomplete', async ({ page }) => {
+  test('checkout falha quando dados de cliente obrigatórios estão incompletos', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const inventoryPage = new InventoryPage(page);
     const cartPage = new CartPage(page);
@@ -65,7 +65,7 @@ test.describe('Sauce Demo full checkout flow', () => {
     await checkoutStepOnePage.expectErrorText(/First Name is required/i);
   });
 
-  test('complete order and verify cart access without logout', async ({ page }) => {
+  test('finalizar pedido e verificar acesso ao carrinho sem logout', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const inventoryPage = new InventoryPage(page);
     const cartPage = new CartPage(page);

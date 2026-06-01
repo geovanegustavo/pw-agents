@@ -10,14 +10,14 @@ const sortOptions = {
   priceHighLow: 'hilo',
 };
 
-test.describe('Inventory filter validation', () => {
+test.describe('Validação de filtro de inventário', () => {
   test.beforeEach(async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
     await loginPage.login(STANDARD_USER, VALID_PASSWORD);
   });
 
-  test('should display the correct product filter dropdown labels', async ({ page }) => {
+  test('deve exibir os rótulos corretos do dropdown de filtros', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     await inventoryPage.expectLoaded();
 
@@ -31,7 +31,7 @@ test.describe('Inventory filter validation', () => {
     ]);
   });
 
-  test('should sort products by name A to Z', async ({ page }) => {
+  test('deve ordenar produtos por nome de A a Z', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     await inventoryPage.expectLoaded();
 
@@ -42,7 +42,7 @@ test.describe('Inventory filter validation', () => {
     expect(names).toEqual(sortedNames);
   });
 
-  test('should sort products by name Z to A', async ({ page }) => {
+  test('deve ordenar produtos por nome de Z a A', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     await inventoryPage.expectLoaded();
 
@@ -53,7 +53,7 @@ test.describe('Inventory filter validation', () => {
     expect(names).toEqual(sortedNames);
   });
 
-  test('should sort products by price low to high', async ({ page }) => {
+  test('deve ordenar produtos por preço do menor para o maior', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     await inventoryPage.expectLoaded();
 
@@ -64,7 +64,7 @@ test.describe('Inventory filter validation', () => {
     expect(prices).toEqual(sortedPrices);
   });
 
-  test('should sort products by price high to low', async ({ page }) => {
+  test('deve ordenar produtos por preço do maior para o menor', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     await inventoryPage.expectLoaded();
 

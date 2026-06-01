@@ -4,14 +4,14 @@ import { InventoryPage } from '../page/inventory-page';
 import { LoginPage } from '../page/login-page';
 import { STANDARD_USER, VALID_PASSWORD } from './test-data';
 
-test.describe('Sauce Demo inventory page', () => {
+test.describe('Página de inventário do Sauce Demo', () => {
   test.beforeEach(async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
     await loginPage.login(STANDARD_USER, VALID_PASSWORD);
   });
 
-  test('shows inventory page initial state with default sort and empty cart', async ({ page }) => {
+  test('exibe estado inicial da página de inventário com ordenação padrão e carrinho vazio', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
 
     await inventoryPage.expectLoaded();
@@ -20,7 +20,7 @@ test.describe('Sauce Demo inventory page', () => {
     expect(await inventoryPage.getCartBadgeText()).toBe('');
   });
 
-  test('displays product cards with name, description, price and image', async ({ page }) => {
+  test('exibe cards de produto com nome, descrição, preço e imagem', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
 
     await inventoryPage.expectLoaded();
@@ -40,7 +40,7 @@ test.describe('Sauce Demo inventory page', () => {
     expect(prices[0]).toBeGreaterThan(0);
   });
 
-  test('toggles add-to-cart and remove state for inventory buttons', async ({ page }) => {
+  test('alterna botão adicionar ao carrinho e remover nos produtos', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
 
     await inventoryPage.expectLoaded();
@@ -55,7 +55,7 @@ test.describe('Sauce Demo inventory page', () => {
     expect((await inventoryPage.getItemButtonTextAtIndex(0)).toLowerCase()).toBe('add to cart');
   });
 
-  test('updates cart badge when adding and removing products', async ({ page }) => {
+  test('atualiza badge do carrinho ao adicionar e remover produtos', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
 
     await inventoryPage.expectLoaded();
@@ -71,7 +71,7 @@ test.describe('Sauce Demo inventory page', () => {
     expect(await inventoryPage.isCartBadgeVisible()).toBe(false);
   });
 
-  test('navigates to cart and returns to inventory preserving added item state', async ({ page }) => {
+  test('navega para o carrinho e retorna ao inventário preservando o estado dos itens adicionados', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     const cartPage = new CartPage(page);
 
@@ -88,7 +88,7 @@ test.describe('Sauce Demo inventory page', () => {
     expect((await inventoryPage.getItemButtonTextAtIndex(2)).toLowerCase()).toBe('remove');
   });
 
-  test('opens menu and logs out from inventory page', async ({ page }) => {
+  test('abre menu e faz logout a partir da página de inventário', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
     const loginPage = new LoginPage(page);
 
@@ -99,7 +99,7 @@ test.describe('Sauce Demo inventory page', () => {
     await loginPage.expectLoginVisible();
   });
 
-  test('changes sort selection and retains selected value', async ({ page }) => {
+  test('altera seleção de ordenação e mantém o valor selecionado', async ({ page }) => {
     const inventoryPage = new InventoryPage(page);
 
     await inventoryPage.expectLoaded();

@@ -3,13 +3,13 @@ import { InventoryPage } from '../page/inventory-page';
 import { LoginPage } from '../page/login-page';
 import { BASE_URL, STANDARD_USER, VALID_PASSWORD, LOCKED_OUT_USER, INVALID_USER, INVALID_PASSWORD } from './test-data';
 
-test.describe('Sauce Demo login/logout', () => {
+test.describe('Login/logout do Sauce Demo', () => {
   test.beforeEach(async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.goto();
   });
 
-  test('happy path: login with standard_user and logout', async ({ page }) => {
+  test('caminho feliz: login com standard_user e logout', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const inventoryPage = new InventoryPage(page);
 
@@ -23,35 +23,35 @@ test.describe('Sauce Demo login/logout', () => {
     await loginPage.expectLoginVisible();
   });
 
-  test('shows username required error when username is empty', async ({ page }) => {
+  test('mostra erro de usuário obrigatório quando o nome de usuário está vazio', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.login('', VALID_PASSWORD);
 
     await loginPage.expectErrorText(/Username is required/i);
   });
 
-  test('shows password required error when password is empty', async ({ page }) => {
+  test('mostra erro de senha obrigatória quando a senha está vazia', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.login(STANDARD_USER, '');
 
     await loginPage.expectErrorText(/Password is required/i);
   });
 
-  test('shows invalid credentials error for unknown user', async ({ page }) => {
+  test('mostra erro de credenciais inválidas para usuário desconhecido', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.login(INVALID_USER, INVALID_PASSWORD);
 
     await loginPage.expectErrorText(/Username and password do not match any user in this service/i);
   });
 
-  test('shows locked out message for locked_out_user', async ({ page }) => {
+  test('mostra mensagem de usuário bloqueado para locked_out_user', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.login(LOCKED_OUT_USER, VALID_PASSWORD);
 
     await loginPage.expectErrorText(/Sorry, this user has been locked out./i);
   });
 
-  test('login page displays title, placeholders, login button label, instructions and masked password field', async ({ page }) => {
+  test('página de login exibe título, placeholders, rótulo do botão de login, instruções e campo de senha mascarado', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.expectPageTitle();
     await loginPage.expectLoginVisible();
@@ -61,7 +61,7 @@ test.describe('Sauce Demo login/logout', () => {
     await loginPage.expectPasswordMasked();
   });
 
-  test('allows login by pressing Enter in the password field', async ({ page }) => {
+  test('permite login pressionando Enter no campo de senha', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const inventoryPage = new InventoryPage(page);
 
@@ -69,14 +69,14 @@ test.describe('Sauce Demo login/logout', () => {
     await inventoryPage.expectLoaded();
   });
 
-  test('shows invalid credentials error for whitespace-only username and password', async ({ page }) => {
+  test('mostra erro de credenciais inválidas quando usuário e senha são apenas espaços', async ({ page }) => {
     const loginPage = new LoginPage(page);
     await loginPage.login('   ', '   ');
 
     await loginPage.expectErrorText(/Username and password do not match any user in this service/i);
   });
 
-  test('allows retry with valid credentials after invalid login attempt', async ({ page }) => {
+  test('permite nova tentativa com credenciais válidas após login inválido', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const inventoryPage = new InventoryPage(page);
 
@@ -87,7 +87,7 @@ test.describe('Sauce Demo login/logout', () => {
     await inventoryPage.expectLoaded();
   });
 
-  test('allows editing username after invalid login while preserving the error message', async ({ page }) => {
+  test('permite editar o usuário após login inválido mantendo a mensagem de erro', async ({ page }) => {
     const loginPage = new LoginPage(page);
 
     await loginPage.login(INVALID_USER, INVALID_PASSWORD);
@@ -98,7 +98,7 @@ test.describe('Sauce Demo login/logout', () => {
     await loginPage.expectErrorText(/Username and password do not match any user in this service/i);
   });
 
-  test('login fields are reset after logout', async ({ page }) => {
+  test('campos de login são resetados após logout', async ({ page }) => {
     const loginPage = new LoginPage(page);
     const inventoryPage = new InventoryPage(page);
 
