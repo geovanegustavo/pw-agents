@@ -5,9 +5,7 @@ import { CheckoutStepOnePage } from '../page/checkout-step-one-page';
 import { CheckoutStepTwoPage } from '../page/checkout-step-two-page';
 import { InventoryPage } from '../page/inventory-page';
 import { LoginPage } from '../page/login-page';
-
-const STANDARD_USER = 'standard_user';
-const VALID_PASSWORD = 'secret_sauce';
+import { STANDARD_USER, VALID_PASSWORD } from './test-data';
 
 test.describe('Sauce Demo full checkout flow', () => {
   test('login, add one product, checkout, return home and logout', async ({ page }) => {

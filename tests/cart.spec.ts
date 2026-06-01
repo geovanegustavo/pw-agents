@@ -2,10 +2,7 @@ import { test, expect } from '@playwright/test';
 import { CartPage } from '../page/cart-page';
 import { InventoryPage } from '../page/inventory-page';
 import { LoginPage } from '../page/login-page';
-
-const SAUCE_DEMO_URL = 'https://www.saucedemo.com/';
-const STANDARD_USER = 'standard_user';
-const VALID_PASSWORD = 'secret_sauce';
+import { STANDARD_USER, VALID_PASSWORD } from './test-data';
 
 test.describe('Sauce Demo carrinho', () => {
   test('adicionar 2 produtos ao carrinho', async ({ page }) => {

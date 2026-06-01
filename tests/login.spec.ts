@@ -1,13 +1,7 @@
 import { test, expect } from '@playwright/test';
 import { InventoryPage } from '../page/inventory-page';
 import { LoginPage } from '../page/login-page';
-
-const SAUCE_DEMO_URL = 'https://www.saucedemo.com/';
-const STANDARD_USER = 'standard_user';
-const LOCKED_OUT_USER = 'locked_out_user';
-const VALID_PASSWORD = 'secret_sauce';
-const INVALID_USER = 'invalid_user';
-const INVALID_PASSWORD = 'wrong_password';
+import { BASE_URL, STANDARD_USER, VALID_PASSWORD, LOCKED_OUT_USER, INVALID_USER, INVALID_PASSWORD } from './test-data';
 
 test.describe('Sauce Demo login/logout', () => {
   test.beforeEach(async ({ page }) => {
@@ -25,7 +19,7 @@ test.describe('Sauce Demo login/logout', () => {
     await inventoryPage.openMenu();
     await inventoryPage.logout();
 
-    await expect(page).toHaveURL(SAUCE_DEMO_URL);
+    await expect(page).toHaveURL(BASE_URL);
     await loginPage.expectLoginVisible();
   });
 
