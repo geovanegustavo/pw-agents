@@ -3,6 +3,7 @@ import { expect, type Locator, type Page } from '@playwright/test';
 export class InventoryPage {
   readonly page: Page;
   readonly items: Locator;
+  readonly sortSelect: Locator;
   readonly cartLink: Locator;
   readonly cartBadge: Locator;
   readonly menuButton: Locator;
@@ -12,6 +13,7 @@ export class InventoryPage {
   constructor(page: Page) {
     this.page = page;
     this.items = page.locator('.inventory_item');
+    this.sortSelect = page.locator('.product_sort_container');
     this.cartLink = page.locator('.shopping_cart_link');
     this.cartBadge = page.locator('.shopping_cart_badge');
     this.menuButton = page.locator('#react-burger-menu-btn');
@@ -38,6 +40,23 @@ export class InventoryPage {
       names.push(await this.addProductAtIndex(index));
     }
     return names;
+  }
+
+  async setSortOrder(value: string) {
+    await this.sortSelect.selectOption(value);
+  }
+
+  async getItemNames() {
+    return this.items.locator('.inventory_item_name').allTextContents();
+  }
+
+  async getItemPrices() {
+    const priceTexts = await this.items.locator('.inventory_item_price').allTextContents();
+    return priceTexts.map((text) => Number(text.replace(/[^0-9.]/g, '')));
+  }
+
+  async getSortOptionLabels() {
+    return this.sortSelect.locator('option').allTextContents();
   }
 
   async getCartBadgeText() {
