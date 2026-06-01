@@ -1,0 +1,23 @@
+{
+  "name": "pw-agents",
+  "version": "1.0.0",
+  "description": "Playwright com agentes de IA",
+  "main": "index.js",
+  "scripts": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/geovanegustavo/pw-agents.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "type": "commonjs",
+  "bugs": {
+    "url": "https://github.com/geovanegustavo/pw-agents/issues"
+  },
+  "homepage": "https://github.com/geovanegustavo/pw-agents#readme",
+  "devDependencies": {
+    "@playwright/test": "^1.60.0",
+    "@types/node": "^25.9.1"
+  }
+}
