@@ -8,6 +8,8 @@ export class LoginPage {
   readonly loginButton: Locator;
   readonly errorBanner: Locator;
   readonly logo: Locator;
+  readonly credentialsInfo: Locator;
+  readonly passwordInfo: Locator;
 
   constructor(page: Page) {
     this.page = page;
@@ -16,6 +18,8 @@ export class LoginPage {
     this.loginButton = page.locator('#login-button');
     this.errorBanner = page.locator('[data-test="error"]');
     this.logo = page.locator('.login_logo');
+    this.credentialsInfo = page.locator('.login_credentials_wrap');
+    this.passwordInfo = page.locator('.login_password');
   }
 
   async goto() {
@@ -28,11 +32,51 @@ export class LoginPage {
     await this.loginButton.click();
   }
 
+  async loginWithEnter(username: string, password: string) {
+    await this.usernameInput.fill(username);
+    await this.passwordInput.fill(password);
+    await this.passwordInput.press('Enter');
+  }
+
+  async fillUsername(username: string) {
+    await this.usernameInput.fill(username);
+  }
+
+  async fillPassword(password: string) {
+    await this.passwordInput.fill(password);
+  }
+
   async expectLoginVisible() {
     await expect(this.usernameInput).toBeVisible();
     await expect(this.passwordInput).toBeVisible();
     await expect(this.loginButton).toBeVisible();
     await expect(this.logo).toBeVisible();
+  }
+
+  async expectLoginInstructions() {
+    await expect(this.credentialsInfo).toContainText(/accepted usernames are/i);
+    await expect(this.passwordInfo).toContainText(/password for all users/i);
+  }
+
+  async expectPasswordMasked() {
+    await expect(this.passwordInput).toHaveAttribute('type', 'password');
+  }
+
+  async expectInputPlaceholders() {
+    await expect(this.usernameInput).toHaveAttribute('placeholder', 'Username');
+    await expect(this.passwordInput).toHaveAttribute('placeholder', 'Password');
+  }
+
+  async expectLoginButtonLabel() {
+    await expect(this.loginButton).toHaveAttribute('value', 'Login');
+  }
+
+  async expectPageTitle() {
+    await expect(this.page).toHaveTitle('Swag Labs');
+  }
+
+  async expectErrorHidden() {
+    await expect(this.errorBanner).toBeHidden();
   }
 
   async expectErrorText(expected: string | RegExp) {

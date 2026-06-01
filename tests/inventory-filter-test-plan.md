@@ -93,3 +93,95 @@ Adicionar validações dos filtros de ordenação da página de inventário, con
 
 ### Resultado esperado
 - Os preços dos produtos devem estar ordenados do maior para o menor.
+
+---
+
+## Cenário 6: Validação do estado inicial da página de inventário
+
+### Passos
+1. Abrir `https://www.saucedemo.com/`.
+2. Fazer login com `standard_user` e `secret_sauce`.
+3. Verificar que a página de inventário foi carregada.
+4. Verificar o valor padrão do filtro de ordenação.
+5. Verificar que o ícone do carrinho está visível.
+
+### Resultado esperado
+- A página exibe `Products` como título.
+- O filtro de ordenação inicia com `Name (A to Z)`.
+- O badge do carrinho não é exibido quando nenhum item foi adicionado.
+
+---
+
+## Cenário 7: Verificação do conteúdo do card de produto
+
+### Passos
+1. Abrir `https://www.saucedemo.com/`.
+2. Fazer login com `standard_user` e `secret_sauce`.
+3. Verificar o primeiro produto exibido no inventário.
+4. Confirmar nome, descrição, preço e imagem do produto.
+
+### Resultado esperado
+- Cada produto exibe nome, descrição, preço e imagem.
+- O card do produto está completo e visível.
+
+---
+
+## Cenário 8: Alternar ADD TO CART e REMOVE na página de inventário
+
+### Passos
+1. Abrir `https://www.saucedemo.com/`.
+2. Fazer login com `standard_user` e `secret_sauce`.
+3. Clicar em `ADD TO CART` no primeiro produto.
+4. Verificar que o botão mudou para `REMOVE`.
+5. Clicar em `REMOVE` no mesmo produto.
+
+### Resultado esperado
+- O botão muda de `ADD TO CART` para `REMOVE` e vice-versa.
+- O item fica adicionado no carrinho e, ao remover, volta ao estado original.
+
+---
+
+## Cenário 9: Badge do carrinho atualiza conforme itens são adicionados e removidos
+
+### Passos
+1. Abrir `https://www.saucedemo.com/`.
+2. Fazer login com `standard_user` e `secret_sauce`.
+3. Adicionar dois produtos ao carrinho.
+4. Remover um produto.
+5. Remover o último produto.
+
+### Resultado esperado
+- O badge aparece após o primeiro item adicionado.
+- O badge mostra `2` após dois itens.
+- O badge mostra `1` após remover um item.
+- O badge desaparece quando o carrinho fica vazio.
+
+---
+
+## Cenário 10: Navegar para o carrinho e retornar ao inventário
+
+### Passos
+1. Abrir `https://www.saucedemo.com/`.
+2. Fazer login com `standard_user` e `secret_sauce`.
+3. Adicionar um produto ao carrinho.
+4. Clicar no ícone do carrinho.
+5. Verificar que o produto aparece no carrinho.
+6. Clicar em `Continue Shopping` e retornar para o inventário.
+
+### Resultado esperado
+- O produto permanece no carrinho após a navegação.
+- O inventário volta a ser exibido corretamente.
+
+---
+
+## Cenário 11: Logout pelo menu na página de inventário
+
+### Passos
+1. Abrir `https://www.saucedemo.com/`.
+2. Fazer login com `standard_user` e `secret_sauce`.
+3. Abrir o menu lateral.
+4. Clicar em `Logout`.
+
+### Resultado esperado
+- O usuário é redirecionado à página de login.
+- Os campos de login estão visíveis novamente.

@@ -110,3 +110,103 @@ Planejar apenas testes relacionados ao fluxo de login/logout e validações da p
 ### Resultado esperado
 - Todos os elementos essenciais da página de login estão presentes e visíveis.
 - A página está pronta para aceitar credenciais.
+
+---
+
+## Cenário 7: Validação de instruções de login e tipo de senha
+
+### Passos
+1. Abrir `https://www.saucedemo.com/`.
+2. Verificar que a página de inventário exibe as instruções de credenciais aceitas.
+3. Verificar que a seção de senha informa `Password for all users: secret_sauce`.
+4. Verificar que o campo `Password` é do tipo `password`.
+
+### Resultado esperado
+- A página de login apresenta informações de credenciais estáticas.
+- O campo de senha está mascarado e pronto para digitar.
+
+---
+
+## Cenário 8: Manter erro após iniciar correção de login inválido
+
+### Passos
+1. Acessar `https://www.saucedemo.com/`.
+2. Tentar fazer login com `invalid_user` e `wrong_password`.
+3. Verificar a mensagem de erro de credenciais inválidas.
+4. Digitar um valor no campo `Username`.
+
+### Resultado esperado
+- O campo `Username` recebe a entrada digitada corretamente.
+- O banner de erro permanece visível até uma nova tentativa de login.
+
+---
+
+## Cenário 9: Reset de campos após logout
+
+### Passos
+1. Abrir `https://www.saucedemo.com/`.
+2. Fazer login com `standard_user` e `secret_sauce`.
+3. Executar logout pelo menu lateral.
+4. Verificar os campos `Username` e `Password` na página de login.
+
+### Resultado esperado
+- Os campos de login estão vazios após logout.
+- A página está pronta para receber novas credenciais.
+
+---
+
+## Cenário 10: Validação do título da página, placeholders e botão de login
+
+### Passos
+1. Abrir `https://www.saucedemo.com/`.
+2. Verificar o título da página no navegador.
+3. Verificar placeholder `Username` no campo de usuário.
+4. Verificar placeholder `Password` no campo de senha.
+5. Verificar o rótulo do botão `LOGIN`.
+
+### Resultado esperado
+- O título do navegador é `Swag Labs`.
+- Os campos mostram placeholders `Username` e `Password`.
+- O botão de login exibe `Login`.
+
+---
+
+## Cenário 11: Login via tecla Enter no campo de senha
+
+### Passos
+1. Abrir `https://www.saucedemo.com/`.
+2. Preencher `Username` com `standard_user`.
+3. Preencher `Password` com `secret_sauce`.
+4. Pressionar Enter no campo `Password`.
+
+### Resultado esperado
+- O login é enviado ao pressionar Enter.
+- O usuário acessa a página de inventário.
+
+---
+
+## Cenário 12: Credenciais inválidas com espaços em branco
+
+### Passos
+1. Abrir `https://www.saucedemo.com/`.
+2. Preencher `Username` com espaços em branco.
+3. Preencher `Password` com espaços em branco.
+4. Clicar em `LOGIN`.
+
+### Resultado esperado
+- Exibir a mensagem de erro de credenciais inválidas.
+- Permanecer na página de login.
+
+---
+
+## Cenário 13: Retry válido após tentativa de login inválida
+
+### Passos
+1. Abrir `https://www.saucedemo.com/`.
+2. Tentar login com usuário inválido e senha incorreta.
+3. Verificar a mensagem de erro.
+4. Tentar login novamente com `standard_user` e `secret_sauce`.
+
+### Resultado esperado
+- O segundo login válido funciona.
+- O usuário é direcionado para a página de inventário.
