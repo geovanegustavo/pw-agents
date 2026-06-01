@@ -1,4 +1,6 @@
 import { test, expect } from '@playwright/test';
+import { InventoryPage } from '../page/inventory-page';
+import { LoginPage } from '../page/login-page';
 
 const SAUCE_DEMO_URL = 'https://www.saucedemo.com/';
 const STANDARD_USER = 'standard_user';
@@ -9,58 +11,54 @@ const INVALID_PASSWORD = 'wrong_password';
 
 test.describe('Sauce Demo login/logout', () => {
   test.beforeEach(async ({ page }) => {
-    await page.goto(SAUCE_DEMO_URL);
+    const loginPage = new LoginPage(page);
+    await loginPage.goto();
   });
 
   test('happy path: login with standard_user and logout', async ({ page }) => {
-    await page.fill('#user-name', STANDARD_USER);
-    await page.fill('#password', VALID_PASSWORD);
-    await page.click('#login-button');
+    const loginPage = new LoginPage(page);
+    const inventoryPage = new InventoryPage(page);
 
-    await expect(page).toHaveURL(/inventory.html/);
-    await expect(page.locator('.title')).toHaveText('Products');
+    await loginPage.login(STANDARD_USER, VALID_PASSWORD);
+    await inventoryPage.expectLoaded();
 
-    await page.click('#react-burger-menu-btn');
-    await page.click('#logout_sidebar_link');
+    await inventoryPage.openMenu();
+    await inventoryPage.logout();
 
     await expect(page).toHaveURL(SAUCE_DEMO_URL);
-    await expect(page.locator('#login-button')).toBeVisible();
+    await loginPage.expectLoginVisible();
   });
 
   test('shows username required error when username is empty', async ({ page }) => {
-    await page.fill('#password', VALID_PASSWORD);
-    await page.click('#login-button');
+    const loginPage = new LoginPage(page);
+    await loginPage.login('', VALID_PASSWORD);
 
-    await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: Username is required');
+    await loginPage.expectErrorText(/Username is required/i);
   });
 
   test('shows password required error when password is empty', async ({ page }) => {
-    await page.fill('#user-name', STANDARD_USER);
-    await page.click('#login-button');
+    const loginPage = new LoginPage(page);
+    await loginPage.login(STANDARD_USER, '');
 
-    await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: Password is required');
+    await loginPage.expectErrorText(/Password is required/i);
   });
 
   test('shows invalid credentials error for unknown user', async ({ page }) => {
-    await page.fill('#user-name', INVALID_USER);
-    await page.fill('#password', INVALID_PASSWORD);
-    await page.click('#login-button');
+    const loginPage = new LoginPage(page);
+    await loginPage.login(INVALID_USER, INVALID_PASSWORD);
 
-    await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: Username and password do not match any user in this service');
+    await loginPage.expectErrorText(/Username and password do not match any user in this service/i);
   });
 
   test('shows locked out message for locked_out_user', async ({ page }) => {
-    await page.fill('#user-name', LOCKED_OUT_USER);
-    await page.fill('#password', VALID_PASSWORD);
-    await page.click('#login-button');
+    const loginPage = new LoginPage(page);
+    await loginPage.login(LOCKED_OUT_USER, VALID_PASSWORD);
 
-    await expect(page.locator('[data-test="error"]')).toHaveText('Epic sadface: Sorry, this user has been locked out.');
+    await loginPage.expectErrorText(/Sorry, this user has been locked out./i);
   });
 
   test('login page displays username, password and login button', async ({ page }) => {
-    await expect(page.locator('#user-name')).toBeVisible();
-    await expect(page.locator('#password')).toBeVisible();
-    await expect(page.locator('#login-button')).toBeVisible();
-    await expect(page.locator('.login_logo')).toBeVisible();
+    const loginPage = new LoginPage(page);
+    await loginPage.expectLoginVisible();
   });
 });

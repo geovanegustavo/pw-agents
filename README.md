@@ -8,7 +8,6 @@ npm init playwright@latest
 ```
 
 ## 2. Instalação dos agentes do Playwright:
-- Comando: 
 - Fonte: https://playwright.dev/docs/test-agents
 ```bash
 npx playwright init-agents --loop=vscode

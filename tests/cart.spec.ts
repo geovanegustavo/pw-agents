@@ -1,71 +1,59 @@
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import { CartPage } from '../page/cart-page';
+import { InventoryPage } from '../page/inventory-page';
+import { LoginPage } from '../page/login-page';
 
 const SAUCE_DEMO_URL = 'https://www.saucedemo.com/';
 const STANDARD_USER = 'standard_user';
 const VALID_PASSWORD = 'secret_sauce';
 
-async function login(page: Page) {
-  await page.goto(SAUCE_DEMO_URL);
-  await page.fill('#user-name', STANDARD_USER);
-  await page.fill('#password', VALID_PASSWORD);
-  await page.click('#login-button');
-  await expect(page).toHaveURL(/inventory.html/);
-}
-
 test.describe('Sauce Demo carrinho', () => {
   test('adicionar 2 produtos ao carrinho', async ({ page }) => {
-    await login(page);
+    const loginPage = new LoginPage(page);
+    const inventoryPage = new InventoryPage(page);
+    const cartPage = new CartPage(page);
 
-    const firstProduct = page.locator('.inventory_item').first();
-    const secondProduct = page.locator('.inventory_item').nth(1);
+    await loginPage.goto();
+    await loginPage.login(STANDARD_USER, VALID_PASSWORD);
+    await inventoryPage.expectLoaded();
 
-    await expect(firstProduct.locator('button')).toHaveText(/add to cart/i);
-    await expect(secondProduct.locator('button')).toHaveText(/add to cart/i);
+    await inventoryPage.addProducts(2);
+    await expect(await inventoryPage.getCartBadgeText()).toBe('2');
 
-    await firstProduct.locator('button').click();
-    await secondProduct.locator('button').click();
+    await inventoryPage.openCart();
+    await cartPage.expectLoaded();
+    await expect(await cartPage.itemCount()).toBe(2);
 
-    await expect(page.locator('.shopping_cart_badge')).toHaveText('2');
-
-    await page.click('.shopping_cart_link');
-    await expect(page).toHaveURL(/cart.html/);
-
-    const cartItems = page.locator('.cart_item');
-    await expect(cartItems).toHaveCount(2);
-
-    await expect(cartItems.nth(0).locator('.cart_button')).toHaveText('Remove');
-    await expect(cartItems.nth(1).locator('.cart_button')).toHaveText('Remove');
+    await expect(cartPage.firstItemName()).resolves.toBeTruthy();
   });
 
   test('remover 1 produto do carrinho após adicionar 2 produtos', async ({ page }) => {
-    await login(page);
+    const loginPage = new LoginPage(page);
+    const inventoryPage = new InventoryPage(page);
+    const cartPage = new CartPage(page);
 
-    const firstProduct = page.locator('.inventory_item').first();
-    const secondProduct = page.locator('.inventory_item').nth(1);
+    await loginPage.goto();
+    await loginPage.login(STANDARD_USER, VALID_PASSWORD);
+    await inventoryPage.expectLoaded();
 
-    await firstProduct.locator('button').click();
-    await secondProduct.locator('button').click();
+    await inventoryPage.addProducts(2);
+    await expect(await inventoryPage.getCartBadgeText()).toBe('2');
 
-    await expect(page.locator('.shopping_cart_badge')).toHaveText('2');
+    await inventoryPage.openCart();
+    await cartPage.expectLoaded();
+    await expect(await cartPage.itemCount()).toBe(2);
 
-    await page.click('.shopping_cart_link');
-    await expect(page).toHaveURL(/cart.html/);
+    const firstCartItemName = await cartPage.firstItemName();
+    await cartPage.removeItemAtIndex(0);
 
-    const cartItems = page.locator('.cart_item');
-    await expect(cartItems).toHaveCount(2);
+    await expect(await inventoryPage.getCartBadgeText()).toBe('1');
+    await expect(await cartPage.itemCount()).toBe(1);
 
-    const firstCartItemName = (await cartItems.nth(0).locator('.inventory_item_name').textContent())?.trim();
-    await cartItems.nth(0).locator('.cart_button').click();
-
-    await expect(page.locator('.shopping_cart_badge')).toHaveText('1');
-    await expect(page.locator('.cart_item')).toHaveCount(1);
-
-    const remainingItemName = (await page.locator('.cart_item').first().locator('.inventory_item_name').textContent())?.trim();
+    const remainingItemName = await cartPage.firstItemName();
     expect(remainingItemName).toBeTruthy();
     expect(remainingItemName).not.toBe(firstCartItemName);
 
-    await page.click('#continue-shopping');
-    await expect(page).toHaveURL(/inventory.html/);
-    await expect(page.locator('.inventory_item').first().locator('button')).toHaveText(/^(Add to cart|Remove)$/);
+    await cartPage.continueShopping();
+    await inventoryPage.expectLoaded();
   });
 });

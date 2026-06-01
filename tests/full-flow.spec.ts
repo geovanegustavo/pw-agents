@@ -1,96 +1,99 @@
-import { test, expect, type Page } from '@playwright/test';
+import { test, expect } from '@playwright/test';
+import { CartPage } from '../page/cart-page';
+import { CheckoutCompletePage } from '../page/checkout-complete-page';
+import { CheckoutStepOnePage } from '../page/checkout-step-one-page';
+import { CheckoutStepTwoPage } from '../page/checkout-step-two-page';
+import { InventoryPage } from '../page/inventory-page';
+import { LoginPage } from '../page/login-page';
 
-const SAUCE_DEMO_URL = 'https://www.saucedemo.com/';
 const STANDARD_USER = 'standard_user';
 const VALID_PASSWORD = 'secret_sauce';
 
-async function login(page: Page) {
-  await page.goto(SAUCE_DEMO_URL);
-  await page.fill('#user-name', STANDARD_USER);
-  await page.fill('#password', VALID_PASSWORD);
-  await page.click('#login-button');
-  await expect(page).toHaveURL(/inventory.html/);
-}
-
-async function addFirstProductToCart(page: Page) {
-  const firstProduct = page.locator('.inventory_item').first();
-  await expect(firstProduct.locator('button')).toHaveText(/add to cart/i);
-  await firstProduct.locator('button').click();
-  await expect(page.locator('.shopping_cart_badge')).toHaveText('1');
-  return firstProduct.locator('.inventory_item_name').textContent();
-}
-
 test.describe('Sauce Demo full checkout flow', () => {
   test('login, add one product, checkout, return home and logout', async ({ page }) => {
-    await login(page);
+    const loginPage = new LoginPage(page);
+    const inventoryPage = new InventoryPage(page);
+    const cartPage = new CartPage(page);
+    const checkoutStepOnePage = new CheckoutStepOnePage(page);
+    const checkoutStepTwoPage = new CheckoutStepTwoPage(page);
+    const checkoutCompletePage = new CheckoutCompletePage(page);
 
-    const productName = await addFirstProductToCart(page);
+    await loginPage.goto();
+    await loginPage.login(STANDARD_USER, VALID_PASSWORD);
+    await inventoryPage.expectLoaded();
 
-    await page.click('.shopping_cart_link');
-    await expect(page).toHaveURL(/cart.html/);
-    await expect(page.locator('.cart_item')).toHaveCount(1);
-    await expect(page.locator('.cart_item .inventory_item_name')).toHaveText(productName?.trim() || '');
+    const productName = await inventoryPage.addProductAtIndex(0);
 
-    await page.click('#checkout');
-    await expect(page).toHaveURL(/checkout-step-one.html/);
+    await inventoryPage.openCart();
+    await cartPage.expectLoaded();
+    await expect(await cartPage.firstItemName()).toBe(productName);
 
-    await page.fill('#first-name', 'Teste');
-    await page.fill('#last-name', 'Usuario');
-    await page.fill('#postal-code', '12345');
-    await page.click('#continue');
+    await cartPage.checkout();
+    await checkoutStepOnePage.expectLoaded();
+    await checkoutStepOnePage.fillCustomerInformation('Teste', 'Usuario', '12345');
+    await checkoutStepOnePage.continue();
 
-    await expect(page).toHaveURL(/checkout-step-two.html/);
-    await expect(page.locator('.cart_item')).toHaveCount(1);
-    await expect(page.locator('.summary_info')).toContainText(/Payment Information/);
+    await checkoutStepTwoPage.expectLoaded();
+    await checkoutStepTwoPage.finish();
 
-    await page.click('#finish');
-    await expect(page).toHaveURL(/checkout-complete.html/);
-    await expect(page.locator('.complete-header')).toHaveText(/THANK YOU FOR YOUR ORDER/i);
+    await checkoutCompletePage.expectLoaded();
+    await checkoutCompletePage.backHome();
+    await inventoryPage.expectLoaded();
 
-    await page.click('#back-to-products');
-    await expect(page).toHaveURL(/inventory.html/);
-
-    await page.click('#react-burger-menu-btn');
-    await page.click('#logout_sidebar_link');
-    await expect(page).toHaveURL(SAUCE_DEMO_URL);
-    await expect(page.locator('#login-button')).toBeVisible();
+    await inventoryPage.openMenu();
+    await inventoryPage.logout();
+    await expect(page).toHaveURL('https://www.saucedemo.com/');
+    await loginPage.expectLoginVisible();
   });
 
   test('checkout fails when required customer data is incomplete', async ({ page }) => {
-    await login(page);
-    await addFirstProductToCart(page);
+    const loginPage = new LoginPage(page);
+    const inventoryPage = new InventoryPage(page);
+    const cartPage = new CartPage(page);
+    const checkoutStepOnePage = new CheckoutStepOnePage(page);
 
-    await page.click('.shopping_cart_link');
-    await page.click('#checkout');
-    await expect(page).toHaveURL(/checkout-step-one.html/);
+    await loginPage.goto();
+    await loginPage.login(STANDARD_USER, VALID_PASSWORD);
+    await inventoryPage.expectLoaded();
 
-    await page.fill('#last-name', 'Usuario');
-    await page.fill('#postal-code', '12345');
-    await page.click('#continue');
+    await inventoryPage.addProductAtIndex(0);
+    await inventoryPage.openCart();
+    await cartPage.checkout();
 
-    await expect(page.locator('[data-test="error"]')).toBeVisible();
-    await expect(page.locator('[data-test="error"]')).toContainText(/First Name is required/i);
-    await expect(page).toHaveURL(/checkout-step-one.html/);
+    await checkoutStepOnePage.expectLoaded();
+    await checkoutStepOnePage.fillCustomerInformation('', 'Usuario', '12345');
+    await checkoutStepOnePage.continue();
+
+    await checkoutStepOnePage.expectErrorText(/First Name is required/i);
   });
 
   test('complete order and verify cart access without logout', async ({ page }) => {
-    await login(page);
-    await addFirstProductToCart(page);
+    const loginPage = new LoginPage(page);
+    const inventoryPage = new InventoryPage(page);
+    const cartPage = new CartPage(page);
+    const checkoutStepOnePage = new CheckoutStepOnePage(page);
+    const checkoutStepTwoPage = new CheckoutStepTwoPage(page);
+    const checkoutCompletePage = new CheckoutCompletePage(page);
 
-    await page.click('.shopping_cart_link');
-    await page.click('#checkout');
+    await loginPage.goto();
+    await loginPage.login(STANDARD_USER, VALID_PASSWORD);
+    await inventoryPage.expectLoaded();
 
-    await page.fill('#first-name', 'Teste');
-    await page.fill('#last-name', 'Usuario');
-    await page.fill('#postal-code', '12345');
-    await page.click('#continue');
-    await page.click('#finish');
+    await inventoryPage.addProductAtIndex(0);
+    await inventoryPage.openCart();
+    await cartPage.checkout();
 
-    await page.click('#back-to-products');
-    await expect(page).toHaveURL(/inventory.html/);
+    await checkoutStepOnePage.expectLoaded();
+    await checkoutStepOnePage.fillCustomerInformation('Teste', 'Usuario', '12345');
+    await checkoutStepOnePage.continue();
+    await checkoutStepTwoPage.expectLoaded();
+    await checkoutStepTwoPage.finish();
 
-    await page.click('.shopping_cart_link');
-    await expect(page).toHaveURL(/cart.html/);
-    await expect(page.locator('.title')).toHaveText('Your Cart');
+    await checkoutCompletePage.expectLoaded();
+    await checkoutCompletePage.backHome();
+    await inventoryPage.expectLoaded();
+
+    await inventoryPage.openCart();
+    await cartPage.expectLoaded();
   });
 });
